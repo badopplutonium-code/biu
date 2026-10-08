@@ -78,6 +78,7 @@ export const useSettings = create<AppSettings & SettingsActions>()(
           reportPlayHistory: state.reportPlayHistory,
           localMusicDirs: state.localMusicDirs,
           autoCheckUpdate: state.autoCheckUpdate,
+          resumePlayback: state.resumePlayback,
         };
       },
     },

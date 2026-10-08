@@ -29,4 +29,5 @@ export const defaultAppSettings: AppSettings = {
   reportPlayHistory: true,
   localMusicDirs: [],
   autoCheckUpdate: true,
+  resumePlayback: false,
 };

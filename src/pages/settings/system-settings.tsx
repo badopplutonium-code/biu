@@ -385,6 +385,25 @@ export const SystemSettingsTab = ({
         </div>
       </div>
 
+      {/* 记忆播放进度开关 */}
+      <div className="flex w-full items-center justify-between">
+        <div className="mr-6 space-y-1">
+          <div className="text-medium font-medium">记忆播放进度</div>
+          <div className="text-sm text-zinc-500">
+            关闭后每次播放都从头开始；开启则从上次中断处继续（重新打开应用也会续播）
+          </div>
+        </div>
+        <div className="flex w-[360px] justify-end">
+          <Controller
+            control={control}
+            name="resumePlayback"
+            render={({ field }) => (
+              <Switch disableAnimation isSelected={field.value ?? false} onValueChange={field.onChange} />
+            )}
+          />
+        </div>
+      </div>
+
       <Divider />
       <h2>关于应用</h2>
       {/* 自动检查更新开关 */}

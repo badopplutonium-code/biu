@@ -16,6 +16,7 @@ import { getAudioSongInfo } from "@/service/audio-song-info";
 import { getWebInterfaceView } from "@/service/web-interface-view";
 
 import { usePlayProgress } from "./play-progress";
+import { useSettings } from "./settings";
 
 export type PlayDataType = "mv" | "audio";
 
@@ -276,6 +277,12 @@ export const isSame = (
 const shouldReportPlayRecord = (item?: { type: PlayDataType; source?: "local" | "online" }) =>
   item?.type === "mv" && item?.source !== "local";
 
+/**
+ * 是否启用「记忆播放进度」。
+ * 默认关闭（undefined 视为关闭）—— 关闭时每次播放都从头开始。
+ */
+const isResumePlaybackEnabled = () => useSettings.getState()?.resumePlayback === true;
+
 export const usePlayList = create<State & Action>()(
   persist(
     immer((set, get) => {
@@ -287,7 +294,7 @@ export const usePlayList = create<State & Action>()(
             audio.src = currentPlayItem.audioUrl;
           }
           const currentTime = usePlayProgress.getState().currentTime;
-          if (typeof currentTime === "number" && currentTime > 0) {
+          if (isResumePlaybackEnabled() && typeof currentTime === "number" && currentTime > 0) {
             audio.currentTime = currentTime;
           }
           return;
@@ -297,7 +304,7 @@ export const usePlayList = create<State & Action>()(
             audio.src = currentPlayItem.audioUrl;
           }
           const currentTime = usePlayProgress.getState().currentTime;
-          if (typeof currentTime === "number" && currentTime > 0) {
+          if (isResumePlaybackEnabled() && typeof currentTime === "number" && currentTime > 0) {
             audio.currentTime = currentTime;
           }
           return;
@@ -309,7 +316,7 @@ export const usePlayList = create<State & Action>()(
             if (audio.src !== mvPlayData.audioUrl) {
               audio.src = mvPlayData.audioUrl;
               const currentTime = usePlayProgress.getState().currentTime;
-              if (typeof currentTime === "number") {
+              if (isResumePlaybackEnabled() && typeof currentTime === "number") {
                 audio.currentTime = currentTime;
               }
             }
@@ -340,7 +347,7 @@ export const usePlayList = create<State & Action>()(
             if (audio.src !== musicPlayData.audioUrl) {
               audio.src = musicPlayData.audioUrl;
               const currentTime = usePlayProgress.getState().currentTime;
-              if (typeof currentTime === "number") {
+              if (isResumePlaybackEnabled() && typeof currentTime === "number") {
                 audio.currentTime = currentTime;
               }
             }
@@ -473,9 +480,15 @@ export const usePlayList = create<State & Action>()(
               if (playItem) {
                 await ensureAudioSrcValid();
 
-                const localCurrentTime = usePlayProgress.getState().initCurrentTime();
-                if (localCurrentTime) {
-                  audio.currentTime = localCurrentTime;
+                // 未开启「记忆播放进度」时，启动也从 0 开始
+                if (isResumePlaybackEnabled()) {
+                  const localCurrentTime = usePlayProgress.getState().initCurrentTime();
+                  if (localCurrentTime) {
+                    audio.currentTime = localCurrentTime;
+                  }
+                } else {
+                  audio.currentTime = 0;
+                  usePlayProgress.getState().setCurrentTime(0);
                 }
 
                 updateMediaSession({
@@ -561,7 +574,11 @@ export const usePlayList = create<State & Action>()(
 
           // 当前正在播放，如果暂停了则播放
           if (isSame(currentItem, candidate)) {
-            if (audio.paused) {
+            // 未开启「记忆播放进度」时，重新双击同一首也从头播放
+            if (audio.paused || !isResumePlaybackEnabled()) {
+              if (!isResumePlaybackEnabled()) {
+                audio.currentTime = 0;
+              }
               await ensureAudioSrcValid();
               await playAudioSafely();
             }
@@ -571,6 +588,11 @@ export const usePlayList = create<State & Action>()(
           // 列表已存在
           const existItem = list?.find(item => isSame(item, candidate));
           if (existItem) {
+            // 用户主动切换歌曲时，若未开启「记忆播放进度」则从头开始
+            if (!isResumePlaybackEnabled()) {
+              audio.currentTime = 0;
+              usePlayProgress.getState().setCurrentTime(0);
+            }
             set({ playId: existItem.id });
             try {
               await ensureAudioSrcValid();
@@ -646,6 +668,11 @@ export const usePlayList = create<State & Action>()(
             title: sanitizeTitle(item.title),
             id: item.source === "local" && item.id ? item.id : idGenerator(),
           }));
+
+          if (!isResumePlaybackEnabled()) {
+            audio.currentTime = 0;
+            usePlayProgress.getState().setCurrentTime(0);
+          }
 
           set(state => {
             state.list = newList;
@@ -1052,6 +1079,12 @@ usePlayList.subscribe(async (state, prevState) => {
     if (audio && !audio.paused) {
       audio.pause();
       audio.currentTime = 0;
+    }
+
+    // 未开启「记忆播放进度」时，切歌一律清零播放位置
+    if (!isResumePlaybackEnabled()) {
+      audio.currentTime = 0;
+      usePlayProgress.getState().setCurrentTime(0);
     }
     // 切换歌曲
     if (state.playId) {

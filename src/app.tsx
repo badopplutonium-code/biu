@@ -12,6 +12,7 @@ import routes from "./routes";
 import { useAppUpdateStore } from "./store/app-update";
 import { usePlayList } from "./store/play-list";
 import { usePlayProgress } from "./store/play-progress";
+import { useSettings } from "./store/settings";
 import { useShortcutSettings } from "./store/shortcuts";
 
 import "moment/locale/zh-cn";
@@ -149,7 +150,8 @@ export function App() {
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (usePlayProgress.getState().currentTime) {
+      // 仅在开启「记忆播放进度」时保存，否则下次启动也应从头播放
+      if (useSettings.getState()?.resumePlayback === true && usePlayProgress.getState().currentTime) {
         usePlayProgress.getState().saveCurrentTime();
       }
     };

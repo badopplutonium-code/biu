@@ -40,4 +40,6 @@ interface AppSettings {
   localMusicDirs: string[];
   /** 是否在启动时自动检查更新 */
   autoCheckUpdate: boolean;
+  /** 是否记住播放进度（关闭后每次播放都从头开始） */
+  resumePlayback: boolean;
 }
