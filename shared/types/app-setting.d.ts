@@ -38,4 +38,6 @@ interface AppSettings {
   reportPlayHistory: boolean;
   /** 本地音乐目录列表 */
   localMusicDirs: string[];
+  /** 是否在启动时自动检查更新 */
+  autoCheckUpdate: boolean;
 }

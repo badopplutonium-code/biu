@@ -9,7 +9,29 @@ import { channel } from "../ipc/channel";
 const { autoUpdater } = electronUpdater;
 
 let checkForUpdatesInterval: NodeJS.Timeout | null = null;
-function setupAutoUpdater({ getMainWindow }: { getMainWindow: () => BrowserWindow | null }) {
+
+/**
+ * 运行时的自动检查开关。
+ * 由 setupAutoUpdater 注入，用于在不重启应用的情况下响应用户设置变更。
+ */
+let shouldAutoCheck: () => boolean = () => true;
+
+/** 供外部（如设置变更时）动态更新开关状态 */
+function setAutoCheckEnabledGetter(getter: () => boolean) {
+  shouldAutoCheck = getter;
+}
+
+function setupAutoUpdater({
+  getMainWindow,
+  getAutoCheckEnabled,
+}: {
+  getMainWindow: () => BrowserWindow | null;
+  getAutoCheckEnabled?: () => boolean;
+}) {
+  if (getAutoCheckEnabled) {
+    setAutoCheckEnabledGetter(getAutoCheckEnabled);
+  }
+
   autoUpdater.logger = log;
   log.transports.file.level = "info";
   autoUpdater.autoDownload = false;
@@ -57,9 +79,16 @@ function setupAutoUpdater({ getMainWindow }: { getMainWindow: () => BrowserWindo
     });
   });
 
-  autoUpdater.checkForUpdates();
+  // 启动时按用户设置决定是否自动检查
+  if (shouldAutoCheck()) {
+    autoUpdater.checkForUpdates();
+  } else {
+    log.info("[updater] 自动检查更新已关闭，跳过启动检查");
+  }
+
   checkForUpdatesInterval = setInterval(
     () => {
+      if (!shouldAutoCheck()) return;
       autoUpdater.checkForUpdates();
     },
     1 * 60 * 60 * 1000,
@@ -73,4 +102,4 @@ const stopCheckForUpdates = () => {
   }
 };
 
-export { autoUpdater, setupAutoUpdater, stopCheckForUpdates };
+export { autoUpdater, setupAutoUpdater, setAutoCheckEnabledGetter, stopCheckForUpdates };

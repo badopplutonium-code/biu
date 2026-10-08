@@ -153,6 +153,14 @@ if (!gotTheLock) {
 
     setupAutoUpdater({
       getMainWindow: () => mainWindow,
+      // 读取用户设置：是否允许启动时 / 定时自动检查更新
+      getAutoCheckEnabled: () => {
+        try {
+          return appSettingsStore.get("appSettings")?.autoCheckUpdate !== false;
+        } catch {
+          return true;
+        }
+      },
     });
 
     registerAllShortcuts(() => mainWindow);

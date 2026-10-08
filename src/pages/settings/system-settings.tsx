@@ -387,6 +387,20 @@ export const SystemSettingsTab = ({
 
       <Divider />
       <h2>关于应用</h2>
+      {/* 自动检查更新开关 */}
+      <div className="flex w-full items-center justify-between">
+        <div className="mr-6 space-y-1">
+          <div className="text-medium font-medium">自动检查更新</div>
+          <div className="text-sm text-zinc-500">启动时及每隔一段时间自动检查是否有新版本</div>
+        </div>
+        <Controller
+          control={control}
+          name="autoCheckUpdate"
+          render={({ field }) => (
+            <Switch disableAnimation isSelected={field.value ?? true} onValueChange={field.onChange} />
+          )}
+        />
+      </div>
       <div className="flex w-full items-center justify-between">
         <div className="mr-6 flex items-center space-x-1">
           <span>当前版本 {appVersion}</span>
