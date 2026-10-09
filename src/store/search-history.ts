@@ -37,7 +37,16 @@ export const useSearchHistory = create<SearchHistoryState & SearchHistoryAction>
     }),
     {
       name: "search-history",
-      partialize: state => ({ keyword: state.keyword, items: state.items }),
+      // 仅持久化搜索历史列表。
+      // keyword 是「当前搜索词」这个瞬时状态（同时是 /search 结果页的数据源、导航栏输入框初值），
+      // 一旦被持久化，重启应用后输入框会残留上次的搜索词、搜索页也会直接展示旧结果。
+      partialize: state => ({ items: state.items }),
+      // 老版本的持久化数据里含 keyword，merge 时显式丢弃，
+      // 保证升级后「第一次」启动就是干净的（否则要等到第二次启动才生效）。
+      merge: (persisted, current) => ({
+        ...current,
+        items: (persisted as SearchHistoryState | undefined)?.items ?? current.items,
+      }),
     },
   ),
 );
