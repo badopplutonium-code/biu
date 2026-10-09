@@ -24,6 +24,14 @@ const api: ElectronAPI = {
   setProxySettings: proxySettings => ipcRenderer.invoke(channel.app.setProxySettings, proxySettings),
   scanLocalMusic: dirs => ipcRenderer.invoke(channel.localMusic.scan, dirs),
   deleteLocalMusicFile: filePath => ipcRenderer.invoke(channel.localMusic.deleteFile, filePath),
+  // 选择本地背景图片（返回源路径，未落盘）
+  selectThemeImage: () => ipcRenderer.invoke(channel.theme.selectImage),
+  // 将本地图片复制到应用数据目录，返回最终可用路径
+  applyThemeImage: (sourcePath: string) => ipcRenderer.invoke(channel.theme.applyImage, sourcePath),
+  // 清除已保存的自定义背景图
+  clearThemeImage: () => ipcRenderer.invoke(channel.theme.clearImage),
+  // 校验背景图是否仍然存在
+  isThemeImageExists: (imagePath: string) => ipcRenderer.invoke(channel.theme.imageExists, imagePath),
   // 监听来自主进程的导航事件，并将路径回调给渲染端
   navigate: cb => {
     const navigateHandler = (_: Electron.IpcRendererEvent, path: string) => {

@@ -60,3 +60,28 @@ html, body, #root {
 
   padding: 0;
 }
+
+/* ---------------------------------------------------------------
+ * 自定义主题背景（.custom-background 由 src/components/theme/index.tsx 打上）
+ * 根元素底色转透明，让背景层透出；主要面板改为半透明，形成「虚化背景 + 半透明面板」的观感。
+ * 这些规则不在 @layer 内，按 CSS 层叠规则优先级高于 Tailwind utilities。
+ * --------------------------------------------------------------- */
+html.custom-background {
+  background-color: transparent;
+}
+
+html.custom-background .bg-background {
+  background-color: hsl(var(--heroui-background) / 0.72);
+}
+
+html.custom-background .bg-content1 {
+  background-color: hsl(var(--heroui-content1) / 0.68);
+}
+
+html.custom-background .bg-content2 {
+  background-color: hsl(var(--heroui-content2) / 0.6);
+}
+
+html.custom-background .bg-default-100 {
+  background-color: hsl(var(--heroui-default-100) / 0.5);
+}

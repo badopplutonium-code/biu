@@ -30,4 +30,7 @@ export const defaultAppSettings: AppSettings = {
   localMusicDirs: [],
   autoCheckUpdate: true,
   resumePlayback: false,
+  customBackgroundImage: "",
+  backgroundImageBlur: 40,
+  backgroundImageMask: 45,
 };

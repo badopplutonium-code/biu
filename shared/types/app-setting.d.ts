@@ -42,4 +42,10 @@ interface AppSettings {
   autoCheckUpdate: boolean;
   /** 是否记住播放进度（关闭后每次播放都从头开始） */
   resumePlayback: boolean;
+  /** 自定义主题背景图路径（已复制到应用数据目录，为空表示不启用） */
+  customBackgroundImage: string;
+  /** 自定义背景图模糊强度（px） */
+  backgroundImageBlur: number;
+  /** 自定义背景图遮罩浓度（百分比） */
+  backgroundImageMask: number;
 }

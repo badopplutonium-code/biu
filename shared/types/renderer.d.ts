@@ -26,6 +26,14 @@ declare global {
     showFileInFolder: (filePath: string) => Promise<boolean>;
     /** 打开系统文件选择对话框，返回选中的文件路径 */
     selectFile: () => Promise<string | null>;
+    /** 选择本地背景图片，返回源文件路径（未落盘） */
+    selectThemeImage: () => Promise<string | null>;
+    /** 将本地图片复制到应用数据目录，返回最终可用的绝对路径 */
+    applyThemeImage: (sourcePath: string) => Promise<string>;
+    /** 清除已保存的自定义背景图 */
+    clearThemeImage: () => Promise<boolean>;
+    /** 校验背景图是否仍然存在 */
+    isThemeImageExists: (imagePath: string) => Promise<boolean>;
     /** 打开本地目录（默认打开下载目录） */
     openDirectory: (path?: string) => Promise<boolean>;
     /** 在外部浏览器打开链接 */

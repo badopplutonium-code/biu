@@ -30,6 +30,7 @@ import FontSelect from "@/components/font-select";
 import UpdateCheckButton from "@/components/update-check-button";
 
 import ColorSettings from "./color-settings";
+import CustomBackgroundSettings from "./custom-background-settings";
 import ImportExport from "./export-import";
 
 type SystemSettingsTabProps = {
@@ -154,6 +155,10 @@ export const SystemSettingsTab = ({
       {/* color 自定义 */}
       <div className="w-full">
         <ColorSettings control={control} />
+      </div>
+      {/* 自定义主题背景 */}
+      <div className="w-full">
+        <CustomBackgroundSettings control={control} setValue={setValue} />
       </div>
       {/* 字体选择 */}
       <div className="flex w-full items-center justify-between">

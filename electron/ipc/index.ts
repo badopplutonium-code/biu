@@ -9,6 +9,7 @@ import { registerLocalMusicHandlers } from "./local-music";
 import { registerLyricsHandlers } from "./lyrics";
 import { registerShortcutHandlers } from "./shortcut";
 import { registerStoreHandlers } from "./store";
+import { registerThemeHandlers } from "./theme";
 import { registerWindowHandlers } from "./window";
 
 export function registerIpcHandlers(props: IpcHandlerProps) {
@@ -22,4 +23,5 @@ export function registerIpcHandlers(props: IpcHandlerProps) {
   registerShortcutHandlers(props);
   registerLyricsHandlers();
   registerLocalMusicHandlers();
+  registerThemeHandlers();
 }

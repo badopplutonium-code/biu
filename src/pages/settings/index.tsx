@@ -34,6 +34,9 @@ const useSystemSettingsForm = () => {
     reportPlayHistory,
     autoCheckUpdate,
     resumePlayback,
+    customBackgroundImage,
+    backgroundImageBlur,
+    backgroundImageMask,
   } = useSettings(
     useShallow(s => ({
       fontFamily: s.fontFamily,
@@ -54,6 +57,9 @@ const useSystemSettingsForm = () => {
       reportPlayHistory: s.reportPlayHistory,
       autoCheckUpdate: s.autoCheckUpdate,
       resumePlayback: s.resumePlayback,
+      customBackgroundImage: s.customBackgroundImage,
+      backgroundImageBlur: s.backgroundImageBlur,
+      backgroundImageMask: s.backgroundImageMask,
     })),
   );
   const updateSettings = useSettings(s => s.update);
@@ -90,6 +96,9 @@ const useSystemSettingsForm = () => {
       reportPlayHistory,
       autoCheckUpdate,
       resumePlayback,
+      customBackgroundImage,
+      backgroundImageBlur,
+      backgroundImageMask,
     },
   });
 

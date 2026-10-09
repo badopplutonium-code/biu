@@ -77,6 +77,12 @@ export const channel = {
     scan: "local-music:scan",
     deleteFile: "local-music:delete-file",
   },
+  theme: {
+    selectImage: "theme:select-image",
+    applyImage: "theme:apply-image",
+    clearImage: "theme:clear-image",
+    imageExists: "theme:image-exists",
+  },
   window: {
     toggleMini: "window:toggle-mini",
     minimize: "window:minimize",

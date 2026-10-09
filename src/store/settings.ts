@@ -79,6 +79,9 @@ export const useSettings = create<AppSettings & SettingsActions>()(
           localMusicDirs: state.localMusicDirs,
           autoCheckUpdate: state.autoCheckUpdate,
           resumePlayback: state.resumePlayback,
+          customBackgroundImage: state.customBackgroundImage,
+          backgroundImageBlur: state.backgroundImageBlur,
+          backgroundImageMask: state.backgroundImageMask,
         };
       },
     },
